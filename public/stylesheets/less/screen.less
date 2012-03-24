@@ -1,0 +1,65 @@
+@font-color: #333;
+@contact-background-color: #eee;
+@contact-border: #aaa;
+@img-border: #fff;
+@img-border-bevel: #aaa;
+
+.contact-container { 
+  width:400px;
+  padding:10px;
+  border:1px
+  solid @contact-border;
+  margin:0 10px 10px 0;
+  float:left;
+  font-family:sans-serif;
+  color:@font-color;
+  background-color:@contact-background-color;
+}
+
+.contact-container h1 {
+  margin:0;
+  font-weight:normal;
+}
+
+.contact-container h1 span {
+  float:right;
+  font-size:14px;
+  line-height:24px;
+  font-weight:normal;
+}
+
+.contact-container img {
+  border-width:1px;
+  border-style:solid;
+  border-color:@img-border;
+  border-right-color:@img-border-bevel;
+  border-bottom-color:@img-border-bevel;
+  margin-right:10px;
+  float:left;
+}
+
+.contact-container div {
+  margin-bottom:24px;
+  font-size:14px;
+}
+
+.contact-container a {
+  color:@font-color;
+}
+
+.contact-container dl {
+  margin:0;
+  float:left;
+  font-size:14px;
+}
+
+.contact-container dt,
+.contact-container dd {
+  margin:0;
+  float:left;
+}
+
+.contact-container dt {
+  width:50px;
+  clear:left;
+}

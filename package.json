@@ -1,0 +1,13 @@
+{
+    "name": "contact-manager"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "less": ">= 0.0.1"
+    , "jade": ">= 0.0.1"
+  }
+  , "scripts" : {
+      "start" : "node app.js"
+  }
+}

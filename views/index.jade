@@ -1,0 +1,24 @@
+div#contacts
+  script#contactTemplate(type='text/template')
+  
+    img(src='{{ photo }}', alt='{{ name }}')
+    h1 {{ name }}
+      span {{ type }}
+    div
+      {{ address }}
+    dl
+      dt Tel:
+      dd {{ tel }}
+      dt Email:
+      dd
+        a(href='mailto:{{ email }}') {{email}}
+
+//-  <script id="contactTemplate" type="text/template">
+//-    <img src="<%= photo %>" alt="<%= name %>" />
+//-    <h1><%= name %><span><%= type %></span></h1>
+//-    <div><%= address %></div>
+//-    <dl>
+//-        <dt>Tel:</dt><dd><%= tel %></dd>
+//-        <dt>Email:</dt><dd><a href="mailto:<%= email %>"><%= email %></a></dd>
+//-    </dl>
+//-  </script>
