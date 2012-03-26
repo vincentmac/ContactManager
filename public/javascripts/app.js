@@ -59,10 +59,18 @@
 
         initialize: function () {
             this.collection = new Directory(contacts);
+
             this.render();
+            this.$el.find("#filter").append(this.createSelect());
+
+            // Bind callback function to UI events
+            this.on("change:filterType", this.filterByType, this); // the "this" context refers to master view (DirectoryView)
+            this.collection.on("reset", this.render, this);
         },
 
         render: function () {
+            this.$el.find("article").remove();
+
             var that = this;
             _.each(this.collection.models, function (item) {
                 that.renderContact(item);
@@ -74,10 +82,83 @@
                 model: item
             });
             this.$el.append(contactView.render().el);
+        },
+
+        getTypes: function () {
+            return _.uniq(this.collection.pluck("type"), false, function (type) {
+                return type.toLowerCase();
+            });
+        },
+
+        createSelect: function() {
+            // var filter = this.el.find("#filter"),
+            var select = $("<select/>", {
+                    html: "<option value='all'>All</option>"
+                });
+
+            _.each(this.getTypes(), function (item) {
+                var option = $("<option/>", {
+                    value: item.toLowerCase(),
+                    text: item.toLowerCase()
+                }).appendTo(select);
+            });
+            return select;
+            console.log(select);
+        },
+
+        // Add UI events
+        events: {
+            "change #filter select": "setFilter"
+        },
+
+        // Set filter property and fire change event
+        setFilter: function (e) {
+            this.filterType = e.currentTarget.value;
+            this.trigger("change:filterType");
+        },
+
+        // Filter the view
+        filterByType: function () {
+            if (this.filterType === "all") {
+                this.collection.reset(contacts);
+                contactsRouter.navigate("filter/all");
+            } else {
+                this.collection.reset(contacts, { silent: true });
+
+                var filterType = this.filterType,
+                    filtered = _.filter(this.collection.models, function (item) {
+                        return item.get("type").toLowerCase() === filterType;
+                    });
+
+                this.collection.reset(filtered);
+
+                contactsRouter.navigate("filter/" + filterType);  // update addressbar URL
+            }
         }
     });
 
-    //create instance of master view
+    /*
+     * Routers
+     */
+
+    var ContactsRouter = Backbone.Router.extend({
+        routes: {
+            "filter/:type": "urlFilter"  // This creates a new routes localhost/#filter/family
+        },
+
+        urlFilter: function (type) {
+            directory.filterType = type;
+            directory.trigger("change:filterType");
+        }
+    });
+
+    // Create instance of master view
     var directory = new DirectoryView();
+
+    // Create router instance
+    var contactsRouter = new ContactsRouter();
+
+    // Start history service - this allows us to rewrite the url after the # and monitor changes
+    Backbone.history.start();
 
 } (jQuery));
