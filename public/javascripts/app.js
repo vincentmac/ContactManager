@@ -11,6 +11,7 @@
         { name: "Contact 8", address: "1, a street, a town, a city, AB12 3CD", tel: "0123456789", email: "anemail@me.com", type: "family" }
     ];
 
+    // This lets jade and underscore play nicely
     _.templateSettings = {
         interpolate: /\{\{(.+?)\}\}/g
       };
@@ -21,7 +22,12 @@
 
     var Contact = Backbone.Model.extend({
         defaults: {
-            photo: "../images/placeholder.png"
+            photo:      "../images/placeholder.png",
+            name:       "",
+            address:    "",
+            tel:        "",
+            email:      "",
+            type:       ""
         }
     });
 
@@ -47,7 +53,28 @@
             
             this.$el.html(tmpl(this.model.toJSON()));
             return this;
+        },
+
+        events: {
+            "click button.delete": "deleteContact"
+        },
+
+        // Delete Contact Event Handler
+        deleteContact: function () {
+            var removedType = this.model.get("type").toLowerCase();
+
+            // Remove Model (individual contact view)
+            this.model.destroy();
+
+            // Remove view from page
+            this.remove();
+
+            // Re-render select if no more of deleted type
+            if(_.indexOf(directory.getTypes(), removedType) === -1) {
+                directory.$el.find("#filter select").children("[value='" + removedType + "']").remove();
+            }
         }
+        
     });
 
     /*
@@ -66,6 +93,8 @@
             // Bind callback function to UI events
             this.on("change:filterType", this.filterByType, this); // the "this" context refers to master view (DirectoryView)
             this.collection.on("reset", this.render, this);
+            this.collection.on("add", this.renderContact, this);
+            this.collection.on("remove", this.removeContact, this);
         },
 
         render: function () {
@@ -108,7 +137,9 @@
 
         // Add UI events
         events: {
-            "change #filter select": "setFilter"
+            "change #filter select": "setFilter",
+            "click #add": "addContact",
+            "click #showForm": "showForm"
         },
 
         // Set filter property and fire change event
@@ -134,7 +165,51 @@
 
                 contactsRouter.navigate("filter/" + filterType);  // update addressbar URL
             }
+        },
+
+        // Add a new contact event
+        addContact: function (e) {
+            e.preventDefault();
+
+            var formData = {};  // note: the tutorial has a typo here and uses newModel
+            $("#addContact").children("input").each(function (i, el) {
+                if ($(el).val() !== "") {
+                    formData[el.id] = $(el).val();  // same newModel typo
+                }
+            });
+
+            // update data store.
+            contacts.push(formData);
+
+            // Re-render the select filter if new type in unknown
+            if (_.indexOf(this.getTypes(), formData.type) === -1) {
+                this.collection.add(new Contact(formData));
+                // update filter to include new type
+                this.$el.find("#filter").find("select").remove().end().append(this.createSelect());
+            } else {
+                this.collection.add(new Contact(formData));
+            }
+        },
+
+        removeContact: function (removedModel) {
+            var removed = removedModel.attributes;
+
+            // If model acquired default photo property, remove it
+            if (removed.photo === "../images/placeholder.png") {
+                delete removed.photo;
+            }
+
+            _.each(contacts, function (contact) {
+                if (_.isEqual(contact, removed)) {
+                    contacts.splice(_.indexOf(contacts, contact), 1);
+                }
+            });
+        },
+
+        showForm: function() {
+            this.$el.find("#addContact").slideToggle();
         }
+
     });
 
     /*
