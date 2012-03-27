@@ -2,6 +2,22 @@ div#contacts
   header
     div#filter
       label Show me:
+    a#showForm(href='#') Add new contact
+    form#addContact(action='#')
+      label(for='photo') Photo:
+      input#photo(type='file')
+      label(for='name') Name:
+      input#name
+      label(for='type') Type:
+      input#type
+      label(for='address') Address:
+      input#address
+      label(for='tel') Tel:
+      input#tel
+      label(for='email') Email:
+      input#email
+      button#add Add
+
   script#contactTemplate(type='text/template')
   
     img(src='{{ photo }}', alt='{{ name }}')
@@ -15,6 +31,7 @@ div#contacts
       dt Email:
       dd
         a(href='mailto:{{ email }}') {{email}}
+    button.delete Delete
 
 //-  <script id="contactTemplate" type="text/template">
 //-    <img src="<%= photo %>" alt="<%= name %>" />
