@@ -6,14 +6,14 @@
 
 I have broken the tutorial up into separate parts to correspond to the parts in the original tutorial.
 
-There are separate branches: [part1](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-1/), [part2](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-2/), [part3](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-3/)
-as well as version tags on the master branch: v0.1, v0.2, v0.3
+There are separate branches: [part1](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-1/), [part2](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-2/), [part3](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-3/), and [part4](http://net.tutsplus.com/tutorials/javascript-ajax/build-a-contacts-manager-using-backbone-js-part-4/)
+as well as version tags on the master branch: v0.1, v0.2, v0.3, v0.4
 that correspond to the tutorial.
 
 You can view each version in the master branch by checkout that version:
-    ```git checkout v0.3```
+    ```git checkout v0.4```
 
 or by checkout out a branch:
-    ```git checkout part3```
+    ```git checkout part4```
 
 I'll update this repo as I progress through the rest of the tutorial.
