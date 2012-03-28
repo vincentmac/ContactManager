@@ -105,3 +105,32 @@ header:after {
   float: right;
   clear: both;
 }
+.contact-container select,
+.contact-container .type {
+  float: right;
+  display: block;
+  margin: 0;
+}
+.contact-container input,
+.contact-container select {
+  display: block;
+  margin: 0;
+}
+.contact-container .name,
+.contact-container .address {
+  clear: left;
+}
+.contact-container input {
+  float: left;
+  margin: 0 10px 3px 0;
+}
+.contact-container .address {
+  width: 395px;
+  margin-right: 0;
+}
+.contact-container .tel {
+  width: 90px;
+}
+.contact-container form button {
+  margin: 5px 0 0;
+}

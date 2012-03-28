@@ -19,7 +19,7 @@ div#contacts
       button#add Add
 
   script#contactTemplate(type='text/template')
-  
+
     img(src='{{ photo }}', alt='{{ name }}')
     h1 {{ name }}
       span {{ type }}
@@ -32,6 +32,21 @@ div#contacts
       dd
         a(href='mailto:{{ email }}') {{email}}
     button.delete Delete
+    button.edit Edit
+
+  script#contactEditTemplate(type='text/template')
+
+    //- Added photo class to input and moved type input after it for cleaner looking form
+    form(action='#')
+      input.photo(type='file', value='{{ photo }}')
+      input#type(type='hidden', value='{{ type }}')
+      input.name(value='{{ name }}')
+      input.address(value='{{ address }}')
+      input.tel(value='{{ tel }}')
+      input.email(value='{{ email }}')
+      button.save Save
+      button.cancel Cancel
+
 
 //-  <script id="contactTemplate" type="text/template">
 //-    <img src="<%= photo %>" alt="<%= name %>" />
