@@ -46,17 +46,24 @@
     var ContactView = Backbone.View.extend({
         tagName: "article",  // defines the container type (ie div, li, ...)
         className: "contact-container",  // adds a class type to the new container
-        template: $("#contactTemplate").html(),  // uses jQuery to store a cached reference the html contents of the template
+        // template: $("#contactTemplate").html(),  // uses jQuery to store a cached reference the html contents of the template
+        template: _.template($("#contactTemplate").html()),  // 
+        editTemplate: _.template($("#contactEditTemplate").html()),
 
         render: function () {
-            var tmpl = _.template(this.template);
+            // var tmpl = _.template(this.template);
             
-            this.$el.html(tmpl(this.model.toJSON()));
+            // this.$el.html(tmpl(this.model.toJSON()));
+            this.$el.html(this.template(this.model.toJSON()));
             return this;
         },
 
         events: {
-            "click button.delete": "deleteContact"
+            "click button.delete": "deleteContact",
+            "click button.edit": "editContact",
+            "change select.type": "addTypes",
+            "click button.save": "saveEdits",
+            "click button.cancel": "cancelEdits"
         },
 
         // Delete Contact Event Handler
@@ -73,6 +80,86 @@
             if(_.indexOf(directory.getTypes(), removedType) === -1) {
                 directory.$el.find("#filter select").children("[value='" + removedType + "']").remove();
             }
+        },
+
+        // Edit Contact Event Handler
+        editContact: function () {
+            // Render editTemplate
+            this.$el.html(this.editTemplate(this.model.toJSON()));
+
+            var newOpt = $("<option/>", {
+                html: "<em>Add new...</em>",
+                value: "addType"
+            });
+
+            // this.select = directory.createSelect().addClass("type")
+            //     .val(this.$el.find("#type").val()).append(newOpt)
+            //     .insertAfter(this.$el.find(".name"));
+
+            this.select = directory.createSelect().children(":first").remove().end().addClass("type")
+                .val(this.$el.find("#type").val()).append(newOpt)  // Set value of select to current type
+                .insertAfter(this.$el.find(".photo"));  // Insert after photo to help position this in upper-right
+
+            this.$el.find("input[type='hidden']").remove();
+        },
+
+        // Add Types Event Handler
+        addTypes: function() {
+            if (this.select.val() === "addType") {
+
+                this.select.remove();
+
+                $("<input />", {
+                    "class": "type"
+                }).insertAfter(this.$el.find(".photo")).focus();
+            }
+        },
+
+        // Save Edits Event Handler
+        saveEdits: function (e) {
+            e.preventDefault();
+
+            var formData = {},  // empty element to store form data
+                prev = this.model.previousAttributes();
+
+            // Get form data for each input
+            // $(e.target).closest("form").find(":input").add("photo").each(function () { // tutorial typo
+            $(e.target).closest("form").find(":input").not("button").each(function () {
+                var el = $(this);
+                formData[el.attr("class")] = el.val();
+            });
+
+            // Use the previous/default photo if new one not supplied
+            if (formData.photo === "") {
+                delete formData.photo
+            }
+
+            // Update model
+            this.model.set(formData);
+
+            // Render view
+            this.render();
+
+            // Update Select Filter
+            directory.$el.find("#filter").children(":last").remove();
+            directory.$el.find("#filter").append(directory.createSelect());
+
+            // If model acquired default photo property, remove it
+            if (prev.photo === "../images/placeholder.png") {
+                delete prev.photo;
+            }
+
+            // Update contacts array
+            _.each(contacts, function (contact) {
+                if (_.isEqual(contact, prev)) {
+                    contacts.splice(_.indexOf(contacts, contact), 1, formData);
+                }
+            });
+        },
+
+        // Cancel Edits Event Handler
+        cancelEdits: function () {
+            this.render();
         }
         
     });
@@ -132,7 +219,6 @@
                 }).appendTo(select);
             });
             return select;
-            console.log(select);
         },
 
         // Add UI events
